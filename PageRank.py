@@ -6,16 +6,15 @@ def readCsvFile(file_name):
         readCSV = csv.reader(csvfile, delimiter=',')
         table = []
         for row in readCSV:
-            table=row
+            table.append(row)
         return table
 
 
 def main():
-    v = []
     adjacante_matrix = readCsvFile("Adjacante_matrice.csv")
-    v = readCsvFile("Personnalisation_Student27.csv")
-
-    print(v)
+    print("adja ->",adjacante_matrix)
+    v = readCsvFile("Personnalisation_Student27.csv")[0]
+    print("v -> ",v)
     return 0
 
 if __name__ == '__main__':
