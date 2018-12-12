@@ -11,28 +11,40 @@ def readCsvFile(file_name):
         return table
 
 
-def prob_transpo_matrix(a):
-    p = []
+def prob_matrix(a):
+    p = None
     for li in a:
         value = np.sum(li)
         if value != 0:
-            p.append(np.divide(li, value).tolist())
-    return np.transpose(p).tolist()
+            if p is None:
+                p = np.array([np.divide(li, value)])
+            else:
+                p = np.append(p, np.array([np.divide(li, value)]), axis=0)
+    return p
+
+
+def recur_res(p, a, x, v):
+    next_x = np.multiply(a, p)
+    next_x = np.dot(next_x, x)
+    next_x = np.add(next_x, np.multiply(1 - a, v))
+
+    if np.equal(x, next_x).all():
+        return x
+    else:
+        return recur_res(p, a, next_x, v)
 
 
 """A : np . matrix , alpha : f l o a t , v : np . array , m: bool"""
 def itemRank(a, alpha, v, m):
-    p = prob_transpo_matrix(a)
-    x = None
+    p = np.transpose(prob_matrix(a))
     if m:
         """récurence"""
-
+        return recur_res(p, alpha, v, v)
     else:
         """inversion matricielle"""
         I = np.identity(len(a[0]))
         matrix_inv = np.linalg.inv(np.subtract(I, np.multiply(alpha, p)))
-        x = np.multiply(1-alpha, np.dot(matrix_inv, v))
-    return x
+        return np.multiply(1-alpha, np.dot(matrix_inv, v))
 
 
 def main():
