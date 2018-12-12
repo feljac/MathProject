@@ -51,9 +51,9 @@ def main():
     a = np.array(readCsvFile("Adjacante_matrice.csv"))
     v = np.array(readCsvFile("Personnalisation_Student27.csv")[0])
     x = itemRank(a, 0.15, v, True)
-    print(x)
+    print("récurence ->", x)
     x = itemRank(a, 0.15, v, False)
-    print(x)
+    print("matricielle ->", x)
 
     return 0
 
