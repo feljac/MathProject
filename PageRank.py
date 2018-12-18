@@ -3,22 +3,26 @@ import csv
 
 
 def readCsvFile(file_name):
+    """Open a csv file and convert it's content to an array"""
     with open(file_name) as csvfile:
         readCSV = csv.reader(csvfile, delimiter=',')
-        table = []
+        array = []
         for row in readCSV:
-            table.append(list(map(float, row)))
-        return table
+            array.append(list(map(float, row)))
+        return array
 
 
 def prob_matrix(a):
+    """Convert an adjacence matrix to a transition probability matrix"""
     p = None
     for li in a:
         value = np.sum(li)
         if value != 0:
             if p is None:
+                """first create the matrix"""
                 p = np.matrix(np.divide(li, value))
             else:
+                """append lines to the matrix"""
                 p = np.append(p, np.matrix(np.divide(li, value)), axis=0)
     return p
 
@@ -38,7 +42,9 @@ def recur_res(p, a, x, v):
 """A : np . matrix , alpha : f l o a t , v : np . array , m: bool"""
 def itemRank(a, alpha, v, m):
     p = np.transpose(prob_matrix(a))
+    """transpose and normalise the vector"""
     vectore_norm_transp = np.transpose(np.divide(v, np.sum(v)))
+    """convert the vector to a matrix"""
     vector_as_matrix = np.reshape(vectore_norm_transp, (10, 1))
     if m:
         """récurence"""
@@ -54,12 +60,10 @@ def itemRank(a, alpha, v, m):
 def main():
     a = np.matrix(readCsvFile("Adjacante_matrice.csv"))
     v = np.array(readCsvFile("Personnalisation_Student27.csv")[0])
-    np.set_printoptions(formatter={'float': lambda x: "{0:0.4f}".format(x)})
     x = itemRank(a, 0.15, v, True)
     print("récurence ->", x)
     x = itemRank(a, 0.15, v, False)
     print("matricielle ->", x)
-
     return 0
 
 
