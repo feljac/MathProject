@@ -24,6 +24,7 @@ def prob_matrix(a):
 
 
 def recur_res(p, a, x, v):
+    """Recursive method for itemRank"""
     next_x = np.multiply(a, p)
     next_x = np.dot(next_x, x)
     next_x = np.add(next_x, np.multiply(1 - a, v))
@@ -37,21 +38,23 @@ def recur_res(p, a, x, v):
 """A : np . matrix , alpha : f l o a t , v : np . array , m: bool"""
 def itemRank(a, alpha, v, m):
     p = np.transpose(prob_matrix(a))
-    vn = np.transpose(np.divide(v, np.sum(v)))
-    vm = np.reshape(vn, (10, 1))
+    vectore_norm_transp = np.transpose(np.divide(v, np.sum(v)))
+    vector_as_matrix = np.reshape(vectore_norm_transp, (10, 1))
     if m:
         """récurence"""
-        return recur_res(p, alpha, vm, vm)
+        result = recur_res(p, alpha, vector_as_matrix, vector_as_matrix)
+        return np.squeeze(np.asarray(result))
     else:
         """inversion matricielle"""
         I = np.identity(a.__len__())
         matrix_inv = np.linalg.inv(np.subtract(I, np.multiply(alpha, p)))
-        return np.multiply(1-alpha, np.dot(matrix_inv, vm))
-
+        result = np.multiply(1-alpha, np.dot(matrix_inv, vector_as_matrix))
+        return np.squeeze(np.asarray(result))
 
 def main():
     a = np.matrix(readCsvFile("Adjacante_matrice.csv"))
     v = np.array(readCsvFile("Personnalisation_Student27.csv")[0])
+    np.set_printoptions(formatter={'float': lambda x: "{0:0.4f}".format(x)})
     x = itemRank(a, 0.15, v, True)
     print("récurence ->", x)
     x = itemRank(a, 0.15, v, False)
